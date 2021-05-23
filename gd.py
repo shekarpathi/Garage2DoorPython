@@ -126,5 +126,5 @@ def send_email(subject, body, ip):
 
 if __name__ == "__main__":
         get_Host_name_IP() #Function call
-        send_email(secret.GMAIL_FROM_ADDRESS + " Started", 'curl -H "secretHeader: ' + secret.HEADER_PASSWORD + '" -X POST http://raghupi.local:5001/press/single\n', 'startup script')
+        send_email(secret.SECRET_STARTUP_MESSAGE, 'curl -H "secret: ' + secret.HEADER_PASSWORD + '" -X POST http://raghupi.local:5001/on1\n', 'startup script')
         app.run(host = '0.0.0.0',port=5002)
