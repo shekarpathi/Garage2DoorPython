@@ -8,7 +8,7 @@ app = Flask(__name__)
 limiter = Limiter(
     app,
     key_func=get_remote_address,
-    default_limits=["24 per day", "20 per hour"]
+    default_limits=["20 per hour"]
 )
 
 import wiringpi
@@ -32,12 +32,8 @@ counter = 0
 @app.route("/two")
 @limiter.limit("2 per minute")
 def two():
+    print(get_remote_address())
     return "2 per minute!"
-
-@app.route("/five")
-@limiter.limit("5 per minute")
-def two():
-    return "5 per minute!"
 
 @app.route("/")
 def hello():
