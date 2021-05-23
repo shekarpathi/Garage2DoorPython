@@ -1,5 +1,16 @@
 from flask import Flask,jsonify,json,request
+
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 app = Flask(__name__)
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["20 per day", "10 per hour"]
+)
+
 import wiringpi
 import time
 import socket
@@ -18,6 +29,11 @@ wiringpi.pinMode(control_pin_2, 0) # Initialize as input mode so that it does no
 
 counter = 0
 
+@app.route("/five")
+@limiter.limit("2 per minute")
+def two():
+    return "2 per minute!"
+
 @app.route("/")
 def hello():
         global counter
@@ -25,6 +41,7 @@ def hello():
         return str(counter)
 
 @app.route("/on1", methods=['GET'])
+@limiter.limit("2 per minute")
 def actOnDoor1():
 #        send_email('Pressed /on1', 'press method called', getRemoteIP())
         secretHeader = request.headers.get('secret')
@@ -37,6 +54,7 @@ def actOnDoor1():
 		return "secret not present. " + warningString()
 
 @app.route("/on2", methods=['GET'])
+@limiter.limit("2 per minute")
 def actOnDoor2():
 #        send_email('Pressed /on2', 'press method called', getRemoteIP())
 	secretHeader = request.headers.get('secret')
