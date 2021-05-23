@@ -8,7 +8,7 @@ app = Flask(__name__)
 limiter = Limiter(
     app,
     key_func=get_remote_address,
-    default_limits=["20 per day", "10 per hour"]
+    default_limits=["24 per day", "20 per hour"]
 )
 
 import wiringpi
@@ -29,10 +29,15 @@ wiringpi.pinMode(control_pin_2, 0) # Initialize as input mode so that it does no
 
 counter = 0
 
-@app.route("/five")
+@app.route("/two")
 @limiter.limit("2 per minute")
 def two():
     return "2 per minute!"
+
+@app.route("/five")
+@limiter.limit("5 per minute")
+def two():
+    return "5 per minute!"
 
 @app.route("/")
 def hello():
